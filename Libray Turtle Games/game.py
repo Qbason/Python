@@ -20,7 +20,7 @@ wn = turtle.Screen()
 wn.title("Snake Game by Ubarzadzi")
 wn.bgcolor("green")
 wn.setup(width=600, height=600)
-wn.tracer(0) # Sfreezowanie początkowego ekranu
+wn.tracer(0) 
 
 # Głowa snejka
 head = turtle.Turtle()
@@ -62,6 +62,7 @@ food.goto(0,100)
 
 segments = []
 
+#Pen
 pen = turtle.Turtle()
 pen.speed(0)
 pen.shape("square")
