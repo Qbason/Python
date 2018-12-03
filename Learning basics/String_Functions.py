@@ -10,4 +10,4 @@ print("This is an example".endswith("example"))
 
 print("ZDANIE !! ".lower())
 
-print("Małe lettersy".upper())
+print("Small lettersy".upper())
