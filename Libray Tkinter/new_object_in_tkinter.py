@@ -38,11 +38,11 @@ class App(Frame):
         self.entrythingy.pack()
 
         # here is the application variable
-        #self.content = StringVar()
+        self.content = StringVar()
         # set it to some value
-        #self.content.set("this is a variable")
+        self.content.set("this is a variable")
         # tell the entry widget to watch this variable
-        self.entrythingy["textvariable"] #= self.content
+        self.entrythingy["textvariable"] = self.content
 
         # and here we get a callback when the user hits return.
         # we will have the program print out the value of the
