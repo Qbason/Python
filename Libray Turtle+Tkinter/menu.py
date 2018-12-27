@@ -1,6 +1,7 @@
 import tkinter 
-import gameforone
 import gamefortwo
+import gameforone
+
 
 
 class Application(tkinter.Frame,gameforone.Score):

@@ -47,17 +47,17 @@ def singleplayer():
     #buff foods
     food2 = engine.Food()
     food2.buff = "fast"
-    food2.value = 20
+    food2.value = 10
     food2.color("pink")
     
     food3 = engine.Food()
     food3.buff = "slow"
-    food3.value = 20
+    food3.value = 7
     food3.color("yellow")
 
     food4 = engine.Food()
     food4.buff = "double"
-    food4.value = 20
+    food4.value = 18
     food4.color("orange")
 
     #generate actual scrore
