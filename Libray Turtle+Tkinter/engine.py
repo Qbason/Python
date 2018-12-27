@@ -18,6 +18,7 @@ class Snake(turtle.Turtle):
             self.segments = []
             self.length_seg = 0
             self.not_eaten = True
+            self.score = 0
 
         def move(self):
             if self.direction == "Up":
@@ -67,13 +68,39 @@ class Snake(turtle.Turtle):
             self.segments.append(segment)
 
         #sprawdzanie odległości między jedzeniem (przekazywane przez argument)
-        def check_distance_food(self, food):
+        def check_distance_food(self, food,snake_map):
 
             if self.distance(food) < 20:
                     x = random.randint(-280, 280)
                     y = random.randint(-280, 280)
+                    
+                    obstacles = snake_map.obstacles 
+
+                    for obstacle in obstacles:
+                        x_food=food.xcor()
+                        y_food=food.ycor()
+
+                        x_obs=obstacle.xcor()
+                        y_obs=obstacle.ycor()
+
+                        x_obs_strech = obstacle.shapesize()[1]
+                        y_obs_strech = obstacle.shapesize()[0]
+
+
+                        if (x_food >=( (-x_obs_strech*10)+x_obs ) and x_food <= ( (x_obs_strech*10) ) + x_obs) and (y_food <=( (y_obs_strech *10)+y_obs ) and y_food >=( -(y_obs_strech*10) ) + y_obs):
+                            print ("Te same kordy ! :O ")
+
+
+                    if (x,y) in (self.xcor(),self.ycor()):
+                        print ("Te same kordy ! :O ")
+                        
+
                     food.goto(x, y)
                     self.add_segment()
+                    self.score += food.value
+                    
+
+                    
 
 
 
@@ -94,20 +121,25 @@ class Snake(turtle.Turtle):
             self.move()
 
         #Sprawdzanie kolizji z obiektami
-        def check_collision_with_obstacle(self,obstacle):
-            x_head=self.xcor()
-            y_head=self.ycor()
+        def check_collision_with_obstacle(self,obstacles):
 
-            x_obs=obstacle.xcor()
-            y_obs=obstacle.ycor()
+            for obstacle in obstacles:
 
-            x_obs_strech = obstacle.shapesize()[1]
-            y_obs_strech = obstacle.shapesize()[0]
+                x_head=self.xcor()
+                y_head=self.ycor()
+
+                x_obs=obstacle.xcor()
+                y_obs=obstacle.ycor()
+
+                x_obs_strech = obstacle.shapesize()[1]
+                y_obs_strech = obstacle.shapesize()[0]
 
 
-            if (x_head >=( (-x_obs_strech*10)+x_obs ) and x_head <= ( (x_obs_strech*10) ) + x_obs) and (y_head <=( (y_obs_strech *10)+y_obs ) and y_head >=( -(y_obs_strech*10) ) + y_obs):
+                if (x_head >=( (-x_obs_strech*10)+x_obs ) and x_head <= ( (x_obs_strech*10) ) + x_obs) and (y_head <=( (y_obs_strech *10)+y_obs ) and y_head >=( -(y_obs_strech*10) ) + y_obs):
 
-                self.end_game()
+                    self.end_game()
+
+
 
         #Sprawdzenie kolizji z samym sobą
         def check_collison_with_self(self):
@@ -115,13 +147,21 @@ class Snake(turtle.Turtle):
                 if self.distance(segment) < 20:
                     self.end_game()
         
-        #Co się dzieje, gdy koniec gry
-        def end_game(self):
+        def reset_snake(self):
             self.direction = "stop"
             for segment in self.segments:
                 segment.goto(1000, 1000)
             del self.segments[:]
-            self.not_eaten = False
+
+
+        #Co się dzieje, gdy koniec gry
+        def end_game(self):
+            self.reset_snake()
+            time.sleep(1)
+            self.goto(0,0)
+            #self.not_eaten = False
+
+        
 
         #Przechodzenie przez ścianę
         def thruu_the_wall(self):
@@ -152,6 +192,7 @@ class Food(turtle.Turtle):
         self.penup()
         self.speed(0)
         self.goto(50, 100)
+        self.value = 5
 
 #generowanie przeszkody
 
@@ -162,8 +203,65 @@ class Obstacle(turtle.Turtle):
         self.color("black")
         self.shape("square")
         self.penup()
+
         
+class Maps():
+    
+    def __init__(self):
+        self.level = 0
+        self.max_level = 10
+        self.obstacles = []
+        #assuming 1 level -> 5 length
+        self.points = 10
+
+    def toreach_points(self):
         
+        #adding extra points whiches we have to get
+        self.points = self.points + self.level * 10
+
+    def level_up(self):
+        self.level += 1
+        self.toreach_points()
+        self.delete_obstacles()
+        self.generate_obstacles()
+
+    
+
+    def generate_obstacles(self):
+
+        level = self.level
+
+        for obs in range(0, level):
+            obstacle = Obstacle()
+            los = random.randint(0,1)
+
+            if obs % 2 == 0:
+                obstacle.shapesize(random.randint(1, 10), 1)
+
+                if(los == 0):
+                    obstacle.goto(random.randint(-300, -100), random.randint(-300, 300))
+                else:
+                    obstacle.goto(random.randint(100, 300), random.randint(-300, 300))
+
+            else:
+
+                obstacle.shapesize(1, random.randint(1, 10))
+
+                if(los == 0):
+                    obstacle.goto(  random.randint(-300, 300), random.randint(-300, -100)   )
+                else:
+                    obstacle.goto(  random.randint(-300, 300), random.randint(100, 300)     )
+    
+            
+            self.obstacles.append(obstacle)
+            
+
+
+    def delete_obstacles(self):
+        for obstacle in self.obstacles:
+            obstacle.goto(1000,1000)
+            del obstacle
+    
     
     
     

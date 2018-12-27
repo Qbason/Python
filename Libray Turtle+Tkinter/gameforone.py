@@ -4,53 +4,30 @@ import turtle
 import time
 import random
 
-class Maps_Game(engine.Obstacle):
-    
+class Score(turtle.Turtle):
     def __init__(self):
-        self.level = 0
-        self.max_level = 10
-        self.obstacles = []
-        toreach()
+        turtle.Turtle.__init__(self)
+        self.penup()
+        self.speed(0)
+        self.shape("square")
+        self.color("white")
+        self.hideturtle()
+        self.goto(0,260)
 
-    def toreach():
-        #assuming 1 level -> 5 length
-        self.points = 5
-        #adding extra points whiches we have to get
-        self.points = self.points + self.level * 5
 
-    def level_up():
-        self.level = +1
-        delete_obstacles()
-        generate_obstacles()
+    def show_score(self,snake,snake_map):
+        score_snake = snake.score
+        score_map = snake_map.points
+        level = snake_map.level
+        self.clear()
+        self.write( "Level {} Score: {} To Reach: {}".format(level,score_snake,score_map), align="center", font=("Courier",24,"normal") )
 
-    def generate_obstacles():
 
-        level = self.level
 
-        for obs in range(0, level):
-            obstacle = engine.Obstacle
 
-            
-            self.obstacles.append(obstacle)
-
-    #     for i in range(0, howmany):
-    #         obstacle = Obstacle()
-    #         if i % 2 == 0:
-    #             obstacle.shapesize(random.randint(1, 10), 1)
-    #         else:
-    #             obstacle.shapesize(1, random.randint(1, 10))
+class gameforone(engine.Snake,engine.Food,engine.Segment,engine.Maps):
     
-    #         obstacle.goto(random.randint(-300, 300), random.randint(-300, 300))
-    
-    #         obstacles.append(obstacle)
-
-    #def delete_obstacle():
-
-
-class gameforone(engine.Snake,engine.Food,engine.Segment):
-       
-
-
+    #Create screen
     wn = turtle.Screen()
     wn.setup(600, 600)
     wn.title("SNAKE SINGLEPLAYER")
@@ -59,16 +36,17 @@ class gameforone(engine.Snake,engine.Food,engine.Segment):
     wn.delay(0)
     wn.fps = 0.1
     
-    
-    obstacles = []
-    
-
-
+    #create map
+    snake_map = engine.Maps()
+    #create snake
     snake = engine.Snake()
-    #generate food numer 1
+    #generate food
     food1 = engine.Food()
+    #generate actual scrore
+    score = Score()
 
-    #control player1
+
+    #control player
     wn.listen()
     wn.onkey(snake.up, "Up")
     wn.onkey(snake.down, "Down")
@@ -78,14 +56,29 @@ class gameforone(engine.Snake,engine.Food,engine.Segment):
     
     while snake.not_eaten:
     
-        snake.check_distance_food(food1)
+        snake.check_distance_food(food1,snake_map)
+
+        if( snake.score >=snake_map.points ):
+            snake.goto(0,0)
+            snake.direction = "stop"
+
+            snake.reset_snake()
+
+            time.sleep(0.5)
+
+            snake_map.level_up()
+            snake.score = 0
+
+            
+
         snake.snake_moving()
         snake.check_collison_with_self()
         snake.thruu_the_wall()
-    
-        # for obstacle in obstacles:
-    
-        #     snake.check_collision_with_obstacle(obstacle)
+
+        snake.check_collision_with_obstacle(snake_map.obstacles)
+
+        score.show_score(snake,snake_map)
+       
     
 
 
