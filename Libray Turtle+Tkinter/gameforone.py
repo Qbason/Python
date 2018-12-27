@@ -1,4 +1,3 @@
-
 import engine
 import turtle
 import time
@@ -20,12 +19,15 @@ class Score(turtle.Turtle):
         score_map = snake_map.points
         level = snake_map.level
         self.clear()
-        self.write( "Level {} Score: {} To Reach: {}".format(level,score_snake,score_map), align="center", font=("Courier",24,"normal") )
+        self.write( "Level {} Score: {} To Reach: {}".format(level,score_snake,score_map), align="center", font=("Courier",21,"normal") )
+
+    def show_win(self):
+        self.clear()
+        self.write( "YOU WON!", align="center", font=("Courier",21,"normal") )
 
 
 
-
-class gameforone(engine.Snake,engine.Food,engine.Segment,engine.Maps):
+def singleplayer():
     
     #Create screen
     wn = turtle.Screen()
@@ -34,7 +36,7 @@ class gameforone(engine.Snake,engine.Food,engine.Segment,engine.Maps):
     wn.bgcolor("green")
     #wn.bgpic("obrazek.gif")
     wn.delay(0)
-    wn.fps = 0.1
+    
     
     #create map
     snake_map = engine.Maps()
@@ -42,6 +44,22 @@ class gameforone(engine.Snake,engine.Food,engine.Segment,engine.Maps):
     snake = engine.Snake()
     #generate food
     food1 = engine.Food()
+    #buff foods
+    food2 = engine.Food()
+    food2.buff = "fast"
+    food2.value = 20
+    food2.color("pink")
+    
+    food3 = engine.Food()
+    food3.buff = "slow"
+    food3.value = 20
+    food3.color("yellow")
+
+    food4 = engine.Food()
+    food4.buff = "double"
+    food4.value = 20
+    food4.color("orange")
+
     #generate actual scrore
     score = Score()
 
@@ -57,6 +75,10 @@ class gameforone(engine.Snake,engine.Food,engine.Segment,engine.Maps):
     while snake.not_eaten:
     
         snake.check_distance_food(food1,snake_map)
+        snake.check_distance_food(food2,snake_map)
+        snake.check_distance_food(food3,snake_map)
+        snake.check_distance_food(food4,snake_map)
+        score.show_score(snake,snake_map)
 
         if( snake.score >=snake_map.points ):
             snake.goto(0,0)
@@ -68,8 +90,14 @@ class gameforone(engine.Snake,engine.Food,engine.Segment,engine.Maps):
 
             snake_map.level_up()
             snake.score = 0
+            #print("Level:",snake_map.level)
+            #print("Level_max:",snake_map.max_level)
+            if ( snake_map.level == snake_map.max_level):
+                snake.end_game()
+                
+                score.show_win()
+                snake.not_eaten = False
 
-            
 
         snake.snake_moving()
         snake.check_collison_with_self()
@@ -77,14 +105,12 @@ class gameforone(engine.Snake,engine.Food,engine.Segment,engine.Maps):
 
         snake.check_collision_with_obstacle(snake_map.obstacles)
 
-        score.show_score(snake,snake_map)
-       
-    
-
-
-        time.sleep(wn.fps)
+        
+        
+        time.sleep(snake_map.fps)
     
 
 
 
     wn.mainloop()
+

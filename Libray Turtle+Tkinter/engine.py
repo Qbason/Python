@@ -94,10 +94,21 @@ class Snake(turtle.Turtle):
                     if (x,y) in (self.xcor(),self.ycor()):
                         print ("Te same kordy ! :O ")
                         
+                    if(food.buff == "fast"):
+                        snake_map.fps = 0.05
+
+                    if(food.buff == "slow"):
+                        snake_map.fps = 0.2
+                    if(food.buff == "double"):
+                        self.add_segment()
+                    if(food.buff == None):
+                        snake_map.fps = 0.1
 
                     food.goto(x, y)
+
                     self.add_segment()
                     self.score += food.value
+                    
                     
 
                     
@@ -191,8 +202,9 @@ class Food(turtle.Turtle):
         self.shape("circle")
         self.penup()
         self.speed(0)
-        self.goto(50, 100)
+        self.goto(random.randint(-100,100),random.randint(-100,100))
         self.value = 5
+        self.buff = None
 
 #generowanie przeszkody
 
@@ -209,10 +221,11 @@ class Maps():
     
     def __init__(self):
         self.level = 0
-        self.max_level = 10
+        self.max_level = 8
         self.obstacles = []
         #assuming 1 level -> 5 length
         self.points = 10
+        self.fps = 0.1
 
     def toreach_points(self):
         
@@ -220,7 +233,9 @@ class Maps():
         self.points = self.points + self.level * 10
 
     def level_up(self):
+        self.fps = 0.1
         self.level += 1
+
         self.toreach_points()
         self.delete_obstacles()
         self.generate_obstacles()
