@@ -14,22 +14,15 @@ class Score(turtle.Turtle):
         self.goto(0,260)
 
 
-    def show_score(self,snake,snake2,snake_map):
+    def show_score(self,snake,snake2,snake_map, points):
         score_snake = snake.score
         score_snake2 = snake2.score
 
-        score_map = snake_map.points
 
-        you_need_snake = score_map - score_snake
-        you_need_snake2 = score_map - score_snake2
-
-        level = snake_map.level
         self.clear()
-        self.write( "Score Snake 1: {} You need: {}".format(score_snake,you_need_snake), align="center", font=("Courier",13,"normal") )
+        self.write( " Get {} points to win".format(points), align="center", font=("Courier",13,"normal") )
         self.goto(0,-260)
-        self.write( "Score Snake 2: {} You need: {}".format(score_snake2,you_need_snake2), align="center", font=("Courier",13,"normal") )
-        self.goto(0,-280)
-        self.write( "Level: {} ".format(level), align="center", font=("Courier",13,"normal") )
+        self.write( "Score Snake 1: {} | Score Snake 2: {}".format(score_snake,score_snake2), align="center", font=("Courier",13,"normal") )
         self.goto(0,260)
 
     def show_win(self,snake):
@@ -39,8 +32,44 @@ class Score(turtle.Turtle):
 
 
 
+
+
 def multiplayer():
+
+ 
+    def check_snakes(snake1,snake2):
+
+
+        los = random.randint(0,1)
+
+        for segment in snake2.segments:
+            if snake1.distance(segment)<20:
+                snake1.end_game()
+                print("Głowa 1 uderzyła w ciało 2")
+
+        if snake1.distance(snake2)<20:
+            if(los == 1):
+                snake1.end_game()
+
+            else:
+                snake2.end_game()
+            
+
+        for segment in snake1.segments:
+            if snake2.distance(segment)<20:
+                snake2.end_game()
+                print("Głowa 1 uderzyła w ciało 2")
+
+        
+
     
+    def check_who_won(snake1,snake2):
+        if snake1.score>=value_to_win:
+            score.show_win(snake1)
+        if snake2.score>=value_to_win:
+            score.show_win(snake2)
+        
+
     #Create screen
     wn = turtle.Screen()
     wn.setup(600, 600)
@@ -49,15 +78,45 @@ def multiplayer():
     #wn.bgpic("obrazek.gif")
     wn.delay(0)
     
+    pic_food1 = "images\\food.gif"
+    pic_food2 = "images\\boost.gif"
+    pic_food3 = "images\\slowdown.gif"
+    pic_food4 = "images\\double.gif"
+    body = "images\\body.gif"
+    head_up = "images\\up.gif"
+    head_down = "images\\down.gif"
+    head_left = "images\\left.gif"
+    head_right = "images\\right.gif"
+
     
+    wn.register_shape(pic_food1)
+    wn.register_shape(pic_food2)
+    wn.register_shape(pic_food3)
+    wn.register_shape(pic_food4)
+    wn.register_shape(head_up)
+    wn.register_shape(head_down)
+    wn.register_shape(head_left)
+    wn.register_shape(head_right)
+    wn.register_shape(body)
+
+
+    value_to_win=700
+
+
     #create map
     snake_map = engine.Maps()
+    snake_map.level=5
+    snake_map.generate_obstacles()
     #create snake
     snake = engine.Snake()
     snake.name = "UNO"
+    snake.color("blue")
+    snake.goto(0,90)
+    
 
     snake2 = engine.Snake()
-    snake.name = "DOS"
+    snake2.name = "DOS"
+    snake2.goto(0,-90)
 
     #generate food
     food1 = engine.Food()
@@ -93,23 +152,7 @@ def multiplayer():
     wn.onkey(snake2.left, "a")
     wn.onkey(snake2.right, "d")
     
-    def comparing_points(snake):
-        if( snake.score >=snake_map.points ):
-            snake.goto(0,0)
-            snake.direction = "stop"
-
-            snake.reset_snake()
-
-            time.sleep(0.5)
-
-            snake_map.level_up()
-            snake.score = 0
-            if ( snake_map.level == snake_map.max_level):
-                snake.end_game()
-                
-                score.show_win(snake)
-                snake.not_eaten = False
-
+  
     
     while snake.not_eaten and snake2.not_eaten:
     
@@ -124,13 +167,10 @@ def multiplayer():
 
         snake.check_distance_food(food4,snake_map)
         snake2.check_distance_food(food4,snake_map)
+        
+        score.show_score(snake,snake2,snake_map,value_to_win)
 
-        score.show_score(snake,snake2,snake_map)
-
-        comparing_points(snake)
-        comparing_points(snake2)
-
-
+        check_who_won(snake,snake2)    
 
 
         snake.snake_moving()
@@ -145,7 +185,8 @@ def multiplayer():
 
         snake.check_collision_with_obstacle(snake_map.obstacles)
         snake2.check_collision_with_obstacle(snake_map.obstacles)
-
+         
+        check_snakes(snake,snake2)
         
         
         time.sleep(snake_map.fps)
