@@ -241,7 +241,7 @@ class Food(turtle.Turtle):
             for i in range(-y_obs_strech*10,y_obs_strech*10):
                 cords_y_s.add( obstacle.ycor()+i )
         #Pomocnicze
-        print(cords_x - cords_x_s)
+        #print(cords_x - cords_x_s)
         #print(cords_y - cords_y_s)
         #do tuple bo choicee nie obsługuje indeksów (setów)
         x = random.choice(tuple(cords_x - cords_x_s))

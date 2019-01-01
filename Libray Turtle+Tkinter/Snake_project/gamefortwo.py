@@ -45,7 +45,7 @@ def multiplayer():
         for segment in snake2.segments:
             if snake1.distance(segment)<20:
                 snake1.end_game()
-                print("Głowa 1 uderzyła w ciało 2")
+                #print("Głowa 1 uderzyła w ciało 2")
 
         if snake1.distance(snake2)<20:
             if(los == 1):
@@ -58,7 +58,7 @@ def multiplayer():
         for segment in snake1.segments:
             if snake2.distance(segment)<20:
                 snake2.end_game()
-                print("Głowa 1 uderzyła w ciało 2")
+                #print("Głowa 1 uderzyła w ciało 2")
 
         
 
